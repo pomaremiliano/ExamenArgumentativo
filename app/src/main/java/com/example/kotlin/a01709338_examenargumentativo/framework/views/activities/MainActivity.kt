@@ -7,11 +7,12 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.kotlin.a01709338_examenargumentativo.R
 import com.example.kotlin.a01709338_examenargumentativo.data.network.ApiService
 import com.example.kotlin.a01709338_examenargumentativo.data.network.NetworkModuleDI
-import com.example.kotlin.a01709338_examenargumentativo.data.network.model.ApiObject
-import com.example.kotlin.a01709338_examenargumentativo.framework.viewmodel.DataViewModel
+import com.example.kotlin.a01709338_examenargumentativo.data.network.model.ApiDataItem
+import kotlinx.coroutines.launch
 
 class MainActivity: AppCompatActivity() {
     //private lateinit var viewModel: DataViewModel
@@ -31,69 +32,55 @@ class MainActivity: AppCompatActivity() {
         searchButton = findViewById(R.id.search_button)
         resultTable = findViewById(R.id.result_table)
 
-
+        searchButton.setOnClickListener {
+            getData()
+        }
     }
 
+    private fun getData() {
+        lifecycleScope.launch {
+            try {
+                val res = service.getAllData()
+                println(res)
+                println(res.results)
+                showResult(res.results)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
-    private fun showResult(data: ApiObject) {
-        resultTable.removeAllViews()
+    private fun showResult(dataList: List<ApiDataItem>) {
+        println(dataList)
+
+        val tableLayout = findViewById<TableLayout>(R.id.tableLayout)
+        tableLayout.removeAllViews()
+
         val headersRow = TableRow(this)
         val campo1Header = TextView(this).apply {
-            text = "ID"
-        }
-        val campo2Header = TextView(this).apply {
             text = "Data"
         }
+
         headersRow.addView(campo1Header)
-        headersRow.addView(campo2Header)
-        resultTable.addView(headersRow)
-        data.results.forEach {
-            val row = TableRow(this)
+        tableLayout.addView(headersRow)
+
+        dataList.forEach { results ->
+            val dataRow = TableRow(this)
             val campo1 = TextView(this).apply {
-                text = it.expire.toString()
+                text = results.expire.toString()
+                text = results.flags.toString()
+                text = results.mname
+                text = results.record_type
+                text = results.refresh.toString()
+                text = results.retry.toString()
+                text = results.serial.toString()
+                text = results.tag
+                text = results.ttl.toString()
+                text = results.value
             }
-            val campo2 = TextView(this).apply {
-                text = it.flags.toString()
-            }
-            val campo3 = TextView(this).apply {
-                text = it.mname
-            }
-            val campo4 = TextView(this).apply {
-                text = it.record_type
-            }
-            val campo5 = TextView(this).apply {
-                text = it.refresh.toString()
-            }
-            val campo6 = TextView(this).apply {
-                text = it.retry.toString()
-            }
-            val campo7 = TextView(this).apply {
-                text = it.rname
-            }
-            val campo8 = TextView(this).apply {
-                text = it.serial.toString()
-            }
-            val campo9 = TextView(this).apply {
-                text = it.tag
-            }
-            val campo10 = TextView(this).apply {
-                text = it.ttl.toString()
-            }
-            val campo11 = TextView(this).apply {
-                text = it.value
-            }
-            row.addView(campo1)
-            row.addView(campo2)
-            row.addView(campo3)
-            row.addView(campo4)
-            row.addView(campo5)
-            row.addView(campo6)
-            row.addView(campo7)
-            row.addView(campo8)
-            row.addView(campo9)
-            row.addView(campo10)
-            row.addView(campo11)
-            resultTable.addView(row)
+
+            dataRow.addView(campo1)
+            tableLayout.addView(dataRow)
         }
     }
 }
