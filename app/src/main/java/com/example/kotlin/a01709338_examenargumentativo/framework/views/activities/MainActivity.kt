@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.kotlin.a01709338_examenargumentativo.R
 import com.example.kotlin.a01709338_examenargumentativo.data.network.ApiService
-import com.example.kotlin.a01709338_examenargumentativo.data.network.NetworkModuleDI
 import com.example.kotlin.a01709338_examenargumentativo.data.network.model.ApiDataItem
 import kotlinx.coroutines.launch
 
